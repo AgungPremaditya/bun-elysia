@@ -27,8 +27,6 @@ export function getDetail(id: number): vtuber {
 
 // Create Data
 export function addData(request: vtuber): vtuber[] {
-    log(request);
-    
     data.push({
         id: request.id,
         name: request.name
