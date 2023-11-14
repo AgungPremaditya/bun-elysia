@@ -6,17 +6,19 @@ import { swagger } from "@elysiajs/swagger";
 export const app = new Elysia()
 
 // Route
-app.use(swagger()).group('vtubers', app => app
-  .get('/', () => getData())
-  .get('/:id', ({params}) => getDetail(+params.id))
-  .post('/', ({body}) => addData(body),{body: vtuberDTO, response: vtubersDTO, schema: {
-    responses: t.Array(
-      t.Object({
-        id: t.Number(),
-        name: t.String()
-      })
-    )
-  }})
+app.group('vtubers', app => app
+  .group('/holoid', app => app
+    .get('/', () => getData())
+    .get('/:id', ({params}) => getDetail(+params.id))
+    .post('/', ({body}) => addData(body),{body: vtuberDTO, response: vtubersDTO, schema: {
+      responses: t.Array(
+        t.Object({
+          id: t.Number(),
+          name: t.String()
+        })
+      )
+    }})
+  )
 )
 
 // Run App
