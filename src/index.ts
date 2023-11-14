@@ -1,37 +1,26 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
+import { addData, getData, getDetail } from "./controller/vtuber.controller";
+import { vtuberDTO, vtubersDTO } from "./models/vtuber.model";
+import { swagger } from "@elysiajs/swagger";
 
+export const app = new Elysia()
 
-const app = new Elysia();
-// Data
-const data =
-[
-  { id: 1, name: 'Fu Xuan', type: 'Preservation', element: 'Quantum' },
-  { id: 2, name: 'Clara', type: 'Destruction', element: 'Physical' },
-  { id: 3, name: 'Asta', type: 'Harmony', element: 'Fire' },
-  { id: 4, name: 'Jing Liu', type: 'Destruction', element: 'Ice' },
-  { id: 5, name: 'Kafka', type: 'Nihility', element: 'Lightning' },
-] 
+// Route
+app.use(swagger()).group('vtubers', app => app
+  .get('/', () => getData())
+  .get('/:id', ({params}) => getDetail(+params.id))
+  .post('/', ({body}) => addData(body),{body: vtuberDTO, response: vtubersDTO, schema: {
+    responses: t.Array(
+      t.Object({
+        id: t.Number(),
+        name: t.String()
+      })
+    )
+  }})
+)
 
-/* Routing */
-
-// Index
-app.get("/", () => { return data })
-
-// Detail
-app.get("/:id", ({ params: { id } }) => { 
-  return data.find(item => item.id === +id)
-})
-
-// Create
-app.post('/', ({ body }) => {
-  data.push(body)
-  return data
-})
-
-
-
-
-app.listen(3000)
+// Run App
+app.listen(3000);
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
